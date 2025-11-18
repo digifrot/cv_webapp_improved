@@ -26,6 +26,16 @@
                    placeholder="Paste LinkedIn job link..."
                    class="input"/>
 
+            <label class="label">GPT Model</label>
+            <select name="gpt_model" class="input" style="margin-bottom: 20px;">
+                <option value="gpt-4o" selected>GPT-4o (Recommended)</option>
+                <option value="gpt-5">GPT-5</option>
+                <option value="gpt-5-mini">GPT-5 Mini</option>
+                <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                <option value="gpt-4">GPT-4</option>
+                <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+            </select>
+
             <label class="label">System Prompt (optional)</label>
             <textarea name="custom_prompt"
                       rows="10"

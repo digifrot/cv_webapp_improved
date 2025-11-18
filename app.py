@@ -24,6 +24,7 @@ def index():
 def generate():
     url = request.form.get("linkedin_url")
     custom_prompt = request.form.get("custom_prompt", "").strip()
+    gpt_model = request.form.get("gpt_model", "gpt-4o")
 
     # Scrape job details
     job_title, job_desc = scrape_linkedin(url)
@@ -31,7 +32,7 @@ def generate():
         return "Could not extract job description from LinkedIn.", 400
 
     # Generate CV (HTML/TXT + PDF-safe)
-    cv_text, cv_pdf, job_fit_percent = generate_cv(job_desc, custom_prompt)
+    cv_text, cv_pdf, job_fit_percent = generate_cv(job_desc, custom_prompt, gpt_model)
 
     return render_template(
         "result.html",

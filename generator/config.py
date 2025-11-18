@@ -20,5 +20,5 @@ SYSTEM_PROMPT = (
     "- No markdown symbols.\n"
     "- Sections: SUMMARY, EXPERIENCE, SKILLS, EDUCATION & CERTIFICATIONS, LANGUAGES, PERSONAL PROJECTS.\n"
     "- Clear, short paragraphs.\n"
-    "- Between 1.5 and 2 pages.\n"
+    "- 1.5 pages max.\n"
 )

@@ -74,25 +74,39 @@ def build_prompt(job_desc):
 FIT_REGEX = re.compile(r"JOB_FIT_PERCENT:\s*(\d{1,3})")
 
 
-def generate_cv(job_desc, custom_prompt=None):
+def generate_cv(job_desc, custom_prompt=None, model="gpt-4o"):
     """
     Produce two versions:
     - HTML/TXT version (header with plain text)
     - PDF-safe version (header with <link> tag)
+    
+    Args:
+        job_desc: Job description text
+        custom_prompt: Optional custom system prompt
+        model: GPT model to use (default: "gpt-4o")
     """
 
     system_prompt = custom_prompt if custom_prompt else SYSTEM_PROMPT
     prompt = build_prompt(job_desc)
 
-    # GPT Call
-    response = client.chat.completions.create(
-        model="gpt-4o",
-        temperature=0.6,
-        messages=[
+    # Models that only support default temperature (1)
+    models_with_fixed_temp = ["gpt-5", "gpt-5-mini"]
+    
+    # Build API call parameters
+    api_params = {
+        "model": model,
+        "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": prompt},
         ],
-    )
+    }
+    
+    # Only set temperature for models that support custom values
+    if model.lower() not in models_with_fixed_temp:
+        api_params["temperature"] = 0.6
+
+    # GPT Call
+    response = client.chat.completions.create(**api_params)
 
     raw_content = response.choices[0].message.content
     job_fit_percent = extract_fit_percent(raw_content)
