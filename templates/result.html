@@ -20,6 +20,11 @@
         <h2 class="subtitle">Job Title</h2>
         <p class="output-field">{{ job_title }}</p>
 
+        {% if job_fit_percent is not none %}
+        <h2 class="subtitle">Job Fit Adequacy</h2>
+        <p class="output-field">{{ job_fit_percent }}%</p>
+        {% endif %}
+
         <h2 class="subtitle">Extracted Job Description</h2>
         <textarea readonly class="textarea readonly" rows="15">{{ job_desc }}</textarea>
 

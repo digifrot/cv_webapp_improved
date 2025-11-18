@@ -31,7 +31,7 @@ def generate():
         return "Could not extract job description from LinkedIn.", 400
 
     # Generate CV (HTML/TXT + PDF-safe)
-    cv_text, cv_pdf = generate_cv(job_desc, custom_prompt)
+    cv_text, cv_pdf, job_fit_percent = generate_cv(job_desc, custom_prompt)
 
     return render_template(
         "result.html",
@@ -40,7 +40,8 @@ def generate():
         cv=cv_text,
         cv_pdf=cv_pdf,
         linkedin_profile=LINKEDIN_PROFILE,
-        custom_prompt=custom_prompt
+        custom_prompt=custom_prompt,
+        job_fit_percent=job_fit_percent,
     )
 
 

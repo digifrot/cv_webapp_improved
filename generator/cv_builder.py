@@ -62,13 +62,18 @@ def build_prompt(job_desc):
         f"Examples:\n{fewshot}"
         f"Job Description:\n{job_desc}\n\n"
         f"Base CV:\n{BASE_CV}\n\n"
-        f"Tailored CV:"
+        "Tailored CV:\n"
+        '(After the CV, add a single line exactly like this: '
+        '"JOB_FIT_PERCENT: <number between 0 and 100>%" to reflect the match score.)'
     )
 
 
 # ================================
 # Generate CV (HTML + PDF-Safe)
 # ================================
+FIT_REGEX = re.compile(r"JOB_FIT_PERCENT:\s*(\d{1,3})")
+
+
 def generate_cv(job_desc, custom_prompt=None):
     """
     Produce two versions:
@@ -89,7 +94,9 @@ def generate_cv(job_desc, custom_prompt=None):
         ],
     )
 
-    content = clean(response.choices[0].message.content)
+    raw_content = response.choices[0].message.content
+    job_fit_percent = extract_fit_percent(raw_content)
+    content = clean(remove_fit_line(raw_content))
 
     # Force SUMMARY to appear first
     if not content.upper().startswith("SUMMARY"):
@@ -113,4 +120,20 @@ def generate_cv(job_desc, custom_prompt=None):
     )
 
     # Return both versions
-    return header_html + content, header_pdf + content
+    return header_html + content, header_pdf + content, job_fit_percent
+
+
+def extract_fit_percent(text):
+    if not text:
+        return None
+    match = FIT_REGEX.search(text)
+    if not match:
+        return None
+    value = int(match.group(1))
+    return max(0, min(value, 100))
+
+
+def remove_fit_line(text):
+    if not text:
+        return ""
+    return re.sub(r"^\s*JOB_FIT_PERCENT:.*$", "", text, flags=re.MULTILINE)
