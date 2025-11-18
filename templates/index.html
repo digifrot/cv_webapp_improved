@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI Tailored CV Generator</title>
+
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/loader.css">
+    <script src="/static/js/app.js" defer></script>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1 class="title">AI Tailored CV Generator</h1>
+
+    <div class="card">
+
+        <form id="cvForm" action="/generate" method="POST">
+
+            <label class="label">LinkedIn Job URL</label>
+            <input type="text"
+                   name="linkedin_url"
+                   required
+                   placeholder="Paste LinkedIn job link..."
+                   class="input"/>
+
+            <label class="label">System Prompt (optional)</label>
+            <textarea name="custom_prompt"
+                      rows="10"
+                      class="textarea grey-box">{{ default_prompt }}</textarea>
+
+            <p class="hint">Leave unchanged to use the default system prompt.</p>
+
+            <button type="submit" class="btn-primary">Generate Tailored CV</button>
+
+            <div id="loader" class="loader" style="display:none;"></div>
+        </form>
+
+    </div>
+
+</div>
+
+</body>
+</html>

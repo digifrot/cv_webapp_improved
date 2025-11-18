@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tailored CV Result</title>
+
+    <link rel="stylesheet" href="/static/css/base.css">
+    <link rel="stylesheet" href="/static/css/loader.css">
+    <script src="/static/js/app.js" defer></script>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1 class="title">Tailored CV</h1>
+
+    <div class="card">
+
+        <h2 class="subtitle">Job Title</h2>
+        <p class="output-field">{{ job_title }}</p>
+
+        <h2 class="subtitle">Extracted Job Description</h2>
+        <textarea readonly class="textarea readonly" rows="15">{{ job_desc }}</textarea>
+
+        <h2 class="subtitle">Edit Tailored CV</h2>
+
+        <!-- TXT Download Form -->
+        <form method="POST" action="/download/txt">
+            <textarea name="cv_text" class="textarea editor" rows="20">{{ cv }}</textarea>
+            <input type="hidden" name="job_title" value="{{ job_title }}">
+            <button type="submit" class="btn-primary">Download TXT</button>
+        </form>
+
+        <!-- PDF Download Form -->
+        <form id="pdfForm" method="POST" action="/download/pdf" style="margin-top:20px;">
+            <textarea id="cv_pdf_field" name="cv_pdf" style="display:none;">{{ cv_pdf | safe }}</textarea>
+            <input type="hidden" name="job_title" value="{{ job_title }}">
+            <button type="submit" class="btn-secondary">Download PDF</button>
+        </form>
+        <textarea id="jobDescHidden" style="display:none;">{{ job_desc }}</textarea>
+        <textarea id="customPromptHidden" style="display:none;">{{ custom_prompt | default('', true) }}</textarea>
+
+        <!-- Save Training -->
+        <button id="saveBtn" class="btn-outline" style="margin-top:25px;">
+            Save to Fine-Tuning Dataset
+        </button>
+        <p id="saveStatus" class="success-message" style="display:none;">Saved!</p>
+
+    </div>
+
+</div>
+
+<script>
+const jobDescForTraining = document.getElementById("jobDescHidden").value;
+const customPromptForTraining = document.getElementById("customPromptHidden").value;
+
+document.getElementById("saveBtn").onclick = function () {
+    fetch("/save_training", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({
+            job_desc: jobDescForTraining,
+            cv_text: document.querySelector("textarea.editor").value,
+            custom_prompt: customPromptForTraining
+        })
+    })
+    .then(() => {
+        const status = document.getElementById("saveStatus");
+        status.style.display = "block";
+        setTimeout(() => status.style.display = "none", 2000);
+    });
+};
+
+document.getElementById("pdfForm").addEventListener("submit", function () {
+    const editedText = document.querySelector("textarea.editor").value;
+    const lines = editedText.split("\n");
+
+    const bodyLines = lines.slice(2);
+    if (bodyLines[0] === "") {
+        bodyLines.shift();
+    }
+
+    const pdfHeader =
+        "LIRAN ROTH — Israel | " +
+        "<link href='{{ linkedin_profile }}'>LinkedIn</link> | " +
+        "0542223310 | liranrothwork@gmail.com";
+
+    const finalPdfText = pdfHeader + "\n" + bodyLines.join("\n");
+    document.getElementById("cv_pdf_field").value = finalPdfText.trim();
+});
+
+</script>
+
+</body>
+</html>

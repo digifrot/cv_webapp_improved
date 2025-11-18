@@ -1,0 +1,184 @@
+/* ================================
+   GLOBAL DARK THEME
+================================ */
+body {
+    margin: 0;
+    padding: 0;
+    background: #0d0d0d;
+    color: #f0f0f0;
+    font-family: "Inter", "Segoe UI", Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+/* Container */
+.container {
+    width: 90%;
+    max-width: 800px;
+    margin-top: 40px;
+}
+
+/* Titles */
+.title {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 30px;
+    font-weight: 700;
+    color: #f0f0f0;
+}
+
+.subtitle {
+    font-size: 20px;
+    margin-top: 25px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+/* ================================
+   CARD
+================================ */
+.card {
+    background: #111;
+    padding: 32px;
+    border-radius: 12px;
+    box-shadow: 0 0 25px rgba(0,0,0,0.4);
+    border: 1px solid #1f1f1f;
+}
+
+/* ================================
+   FORMS
+================================ */
+.label {
+    margin-top: 15px;
+    margin-bottom: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    display: block;
+}
+
+.input {
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    background: #161616;
+    border: 1px solid #2a2a2a;
+    color: #e0e0e0;
+    font-size: 15px;
+    margin-bottom: 15px;
+    transition: border 0.2s;
+}
+
+.input:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+.textarea {
+    width: 100%;
+    padding: 14px;
+    border-radius: 8px;
+    background: #161616;
+    border: 1px solid #2a2a2a;
+    color: #e0e0e0;
+    font-size: 15px;
+    resize: vertical;
+    margin-bottom: 15px;
+    transition: border 0.2s;
+}
+
+.textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+}
+
+.textarea.readonly {
+    opacity: 0.8;
+}
+
+.textarea.editor {
+    height: 320px;
+}
+
+/* ================================
+   HINT TEXT
+================================ */
+.hint {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+/* ================================
+   BUTTONS
+================================ */
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+    padding: 14px 20px;
+    width: 100%;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 15px;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.btn-primary:hover {
+    background: #5391fa;
+    box-shadow: 0 0 12px rgba(59,130,246,0.5);
+}
+
+.btn-secondary {
+    background: #1e293b;
+    color: #cbd5e1;
+    padding: 14px 20px;
+    width: 100%;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+    background: #26344a;
+}
+
+.btn-outline {
+    background: transparent;
+    color: #3b82f6;
+    padding: 12px 20px;
+    width: 100%;
+    border: 1px solid #3b82f6;
+    border-radius: 8px;
+    font-size: 16px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.btn-outline:hover {
+    background: #3b82f6;
+    color: #fff;
+}
+
+/* ================================
+   STATUS TEXT
+================================ */
+.success-message {
+    color: #22c55e;
+    font-size: 14px;
+    margin-top: 10px;
+}
+
+/* Output field */
+.output-field {
+    padding: 12px;
+    background: #161616;
+    border-radius: 6px;
+    border: 1px solid #2a2a2a;
+    font-size: 16px;
+}

@@ -1,0 +1,40 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f3f3f3;
+}
+
+.container {
+    width: 60%;
+    margin: auto;
+    margin-top: 40px;
+    padding: 25px;
+    background: white;
+    border-radius: 8px;
+}
+
+pre {
+    white-space: pre-wrap;   /* Wrap long lines */
+    word-wrap: break-word;   /* Break long words if needed */
+    overflow-wrap: break-word;
+    background: #f8f8f8;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #ddd;
+}
+
+textarea {
+    width: 100%;
+    font-family: monospace;
+    padding: 10px;
+}
+
+button {
+    padding: 10px 20px;
+    background: #0073e6;
+    color: white;
+    border: none;
+    margin-top: 10px;
+    cursor: pointer;
+}
+
+
