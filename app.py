@@ -22,14 +22,22 @@ def index():
 # ================================
 @app.route("/generate", methods=["POST"])
 def generate():
-    url = request.form.get("linkedin_url")
+    input_text = request.form.get("linkedin_url", "").strip()
     custom_prompt = request.form.get("custom_prompt", "").strip()
     gpt_model = request.form.get("gpt_model", "gpt-4o")
 
-    # Scrape job details
-    job_title, job_desc = scrape_linkedin(url)
-    if not job_desc:
-        return "Could not extract job description from LinkedIn.", 400
+    # Check if input is a URL (starts with http:// or https://)
+    if input_text.startswith(("http://", "https://")):
+        # Scrape job details from LinkedIn
+        job_title, job_desc = scrape_linkedin(input_text)
+        if not job_desc:
+            return "Could not extract job description from LinkedIn.", 400
+    else:
+        # Treat as pasted job description
+        job_desc = input_text
+        if not job_desc:
+            return "Please provide either a LinkedIn URL or paste a job description.", 400
+        job_title = "Job Position"
 
     # Generate CV (HTML/TXT + PDF-safe)
     cv_text, cv_pdf, job_fit_percent = generate_cv(job_desc, custom_prompt, gpt_model)
