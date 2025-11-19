@@ -6,6 +6,7 @@ from reportlab.lib.enums import TA_LEFT
 from reportlab.lib import colors
 
 from generator.config import LINKEDIN_PROFILE
+import re
 
 
 def save_pdf(text, filename):
@@ -34,13 +35,14 @@ def save_pdf(text, filename):
     styles.add(
         ParagraphStyle(
             name="Header",
-            fontSize=11,
+            fontSize=14,
+            fontName="Helvetica-Bold",
             allowHTML=True,
-            leading=14,
+            leading=18,
             alignment=TA_LEFT,
-            textColor=colors.black,
             underlineProportion=0.1,
-            linkUnderline=True,              # <-- CRITICAL for clickable hyperlinks
+            linkUnderline=True,   
+            textColor=colors.HexColor("#0C2B4E"),           # <-- CRITICAL for clickable hyperlinks
         )
     )
 
@@ -70,6 +72,8 @@ def save_pdf(text, filename):
         story.append(Spacer(1, 12))
 
     # --- BODY (rest of CV)
+    current_section = None
+
     for line in lines[1:]:
         stripped = line.strip()
 
@@ -79,10 +83,35 @@ def save_pdf(text, filename):
         elif stripped.isupper() and len(stripped) < 60:
             # SECTION TITLES (SUMMARY, EXPERIENCE, SKILLS...)
             story.append(Paragraph(f"<b>{stripped}</b>", styles["Section"]))
+            # Track current section so we can add special formatting to its
+            # body (e.g., bold job titles inside EXPERIENCE)
+            current_section = stripped.upper()
+        elif stripped.upper() == "EXPERIENCE":
+            # Support case-insensitive 'Experience' (not uppercase) in case
+            # the base CV is formatted differently.
+            story.append(Paragraph(f"<b>{stripped}</b>", styles["Section"]))
+            current_section = "EXPERIENCE"
 
         else:
             # Normal body paragraph
-            story.append(Paragraph(stripped, styles["Body"]))
+            # If we are inside an EXPERIENCE section, identify lines that
+            # look like job title lines and make them bold. Heuristic:
+            # - contain a pipe '|' plus a 4-digit year OR
+            # - contain a 4-digit year at the end of the line
+            is_job_title = False
+            if current_section == "EXPERIENCE":
+                # Look for patterns like: "Head of... | 2022 - 2025" or
+                # "Role | 2019" - most CV job title lines include a year
+                # or a '|' separator before the company/time
+                if ("|" in stripped and re.search(r"\b\d{4}\b", stripped)):
+                    is_job_title = True
+                elif re.search(r"\b\d{4}\b\s*-\s*\d{4}\b", stripped):
+                    is_job_title = True
+
+            if is_job_title:
+                story.append(Paragraph(f"<b>{stripped}</b>", styles["Body"]))
+            else:
+                story.append(Paragraph(stripped, styles["Body"]))
 
     # --- Build PDF
     doc.build(story)

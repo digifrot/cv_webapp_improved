@@ -81,15 +81,33 @@ document.getElementById("pdfForm").addEventListener("submit", function () {
     const editedText = document.querySelector("textarea.editor").value;
     const lines = editedText.split("\n");
 
-    const bodyLines = lines.slice(2);
-    if (bodyLines[0] === "") {
-        bodyLines.shift();
+    // Derive header from the user's edited text instead of a hardcoded value.
+    // Take up to the first two non-empty lines as the header candidates.
+    const headerCandidates = [];
+    for (let i = 0; i < Math.min(2, lines.length); i++) {
+        const l = lines[i].trim();
+        if (l) headerCandidates.push(l);
     }
 
-    const pdfHeader =
-        "LIRAN ROTH — Israel | " +
-        "<link href='{{ linkedin_profile }}'>LinkedIn</link> | " +
-        "0542223310 | liranrothwork@gmail.com";
+    // Build a single-line header. If the header doesn't include a <link> tag,
+    // replace the plain 'LinkedIn' token with the clickable link, or append it.
+    let pdfHeader = headerCandidates.join(" | ");
+    const linkMarkup = "<link href='{{ linkedin_profile }}'>LinkedIn</link>";
+    if (!pdfHeader.includes("<link")) {
+        if (pdfHeader.includes("LinkedIn")) {
+            pdfHeader = pdfHeader.replace("LinkedIn", linkMarkup);
+        } else if (pdfHeader.length > 0) {
+            pdfHeader = pdfHeader + " | " + linkMarkup;
+        } else {
+            pdfHeader = linkMarkup;
+        }
+    }
+
+    // Body lines are the remainder after the header candidates.
+    const bodyLines = lines.slice(headerCandidates.length);
+    if (bodyLines.length > 0 && bodyLines[0].trim() === "") {
+        bodyLines.shift();
+    }
 
     const finalPdfText = pdfHeader + "\n" + bodyLines.join("\n");
     document.getElementById("cv_pdf_field").value = finalPdfText.trim();

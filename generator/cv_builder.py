@@ -123,12 +123,11 @@ def generate_cv(job_desc, custom_prompt=None, model="gpt-4o"):
     # Header for TXT/HTML (plain)
     header_html = (
         "LIRAN ROTH\n"
-        "Israel | LinkedIn | 0542223310 | liranrothwork@gmail.com\n\n"
+        "LinkedIn | 0542223310 | liranrothwork@gmail.com\n\n"
     )
 
     # Header for PDF — MUST be one continuous line (ReportLab hyperlink uses <link>)
     header_pdf = (
-        f"LIRAN ROTH — Israel | "
         f"<link href='{LINKEDIN_PROFILE}'>LinkedIn</link> | "
         "0542223310 | liranrothwork@gmail.com"
     )
