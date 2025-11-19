@@ -3,10 +3,12 @@ import os
 import json
 import re
 from openai import OpenAI
-from generator.config import OPENAI_API_KEY, SYSTEM_PROMPT, LINKEDIN_PROFILE
+from anthropic import Anthropic
+from generator.config import OPENAI_API_KEY, ANTHROPIC_API_KEY, SYSTEM_PROMPT, LINKEDIN_PROFILE
 
-# Initialize OpenAI client
-client = OpenAI(api_key=OPENAI_API_KEY)
+# Initialize API clients
+openai_client = OpenAI(api_key=OPENAI_API_KEY)
+anthropic_client = Anthropic(api_key=ANTHROPIC_API_KEY)
 
 
 # ================================
@@ -79,36 +81,51 @@ def generate_cv(job_desc, custom_prompt=None, model="gpt-4o"):
     Produce two versions:
     - HTML/TXT version (header with plain text)
     - PDF-safe version (header with <link> tag)
-    
+
     Args:
         job_desc: Job description text
         custom_prompt: Optional custom system prompt
-        model: GPT model to use (default: "gpt-4o")
+        model: Model to use (OpenAI or Anthropic, default: "gpt-4o")
     """
 
     system_prompt = custom_prompt if custom_prompt else SYSTEM_PROMPT
     prompt = build_prompt(job_desc)
 
-    # Models that only support default temperature (1)
-    models_with_fixed_temp = ["gpt-5", "gpt-5-mini", "gpt-5-nano"]
-    
-    # Build API call parameters
-    api_params = {
-        "model": model,
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": prompt},
-        ],
-    }
-    
-    # Only set temperature for models that support custom values
-    if model.lower() not in models_with_fixed_temp:
-        api_params["temperature"] = 0.6
+    # Determine if this is an Anthropic model
+    is_anthropic = model.startswith("claude-")
 
-    # GPT Call
-    response = client.chat.completions.create(**api_params)
+    if is_anthropic:
+        # Anthropic API call
+        response = anthropic_client.messages.create(
+            model=model,
+            max_tokens=4096,
+            temperature=0.6,
+            system=system_prompt,
+            messages=[
+                {"role": "user", "content": prompt}
+            ]
+        )
+        raw_content = response.content[0].text
+    else:
+        # OpenAI API call
+        # Models that only support default temperature (1)
+        models_with_fixed_temp = ["gpt-5", "gpt-5-mini", "gpt-5-nano", "gpt-5.1"]
 
-    raw_content = response.choices[0].message.content
+        # Build API call parameters
+        api_params = {
+            "model": model,
+            "messages": [
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": prompt},
+            ],
+        }
+
+        # Only set temperature for models that support custom values
+        if model.lower() not in models_with_fixed_temp:
+            api_params["temperature"] = 0.6
+
+        response = openai_client.chat.completions.create(**api_params)
+        raw_content = response.choices[0].message.content
     job_fit_percent = extract_fit_percent(raw_content)
     content = clean(remove_fit_line(raw_content))
 

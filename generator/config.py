@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
 # LinkedIn link used inside PDF header
 LINKEDIN_PROFILE = "https://www.linkedin.com/in/liran-roth-6a92051b1/"

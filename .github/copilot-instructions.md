@@ -1,11 +1,11 @@
 # Copilot instructions for cv_webapp_improved
 
-This repository is a small Flask web app that generates tailored CVs using OpenAI and exports both text and PDF versions.
+This repository is a small Flask web app that generates tailored CVs using OpenAI or Anthropic models and exports both text and PDF versions.
 
 - **Entry point:** `app.py` — routes: `/` (index), `/generate` (POST), `/download/txt`, `/download/pdf`, `/save_training`.
 - **Core generator package:** `generator/` — important files:
-  - `config.py` — environment-driven settings. `OPENAI_API_KEY` is loaded from `.env`. `SYSTEM_PROMPT` contains the canonical system prompt.
-  - `cv_builder.py` — builds prompts, calls OpenAI, and returns two outputs: `header_html + content` and `header_pdf + content`. It expects the model assistant to append a single line like `JOB_FIT_PERCENT: <n>%` which is parsed by `extract_fit_percent`.
+  - `config.py` — environment-driven settings. `OPENAI_API_KEY` and `ANTHROPIC_API_KEY` are loaded from `.env`. `SYSTEM_PROMPT` contains the canonical system prompt.
+  - `cv_builder.py` — builds prompts, calls either OpenAI or Anthropic APIs (model detection via `startswith("claude-")`), and returns two outputs: `header_html + content` and `header_pdf + content`. It expects the model assistant to append a single line like `JOB_FIT_PERCENT: <n>%` which is parsed by `extract_fit_percent`.
   - `training.py` — `save_training_example(...)` appends a JSONL record to `data/training_data.jsonl` (used by the UI Save button).
   - `pdf_exporter.py` — uses ReportLab; requires the PDF header to include a single-line `<link href='...'>LinkedIn</link>` markup for clickable links. Styles named `Header`, `Body`, `Section` are relied upon in the exporter.
 
@@ -14,12 +14,12 @@ Key patterns & gotchas (do not change lightly):
 - The generator enforces a specific output postamble: `JOB_FIT_PERCENT: <number>` — `cv_builder.FIT_REGEX` extracts this. If you change how the model output is produced, keep this postamble or update `extract_fit_percent` accordingly.
 - `generate_cv()` returns two variants: a plain TXT/HTML header (`header_html`) and a PDF-safe header (`header_pdf` which uses `<link>`). The PDF exporter expects that `<link>` to exist (or will add it via `_ensure_link_in_header`). Preserve the one-line PDF header formatting.
 - `cv_builder.clean()` strips markdown bold/italic from model output — models sometimes emit `**bold**` or `*italic*` and the app expects plain text for the PDF builder.
-- Model selection: default in UI is `gpt-4o`. `cv_builder` special-cases models with fixed temperature (see `models_with_fixed_temp`). Keep that behavior when adding or removing model names.
+- Model selection: default in UI is `gpt-4o`. `cv_builder` supports both OpenAI (GPT) and Anthropic (Claude) models. OpenAI models are special-cased for fixed temperature (see `models_with_fixed_temp`). Anthropic models use a fixed max_tokens of 4096 and temperature of 0.6.
 
 Developer workflows
 - Local run (Windows):
   - Create a venv and install deps: `python -m venv venv ; venv\Scripts\activate ; pip install -r requirements.txt`.
-  - Put your `OPENAI_API_KEY` in a `.env` file at repo root.
+  - Put your `OPENAI_API_KEY` and/or `ANTHROPIC_API_KEY` in a `.env` file at repo root.
   - Start: `python app.py` or use the provided `run_app.bat` (it activates `venv` and opens the browser).
 - Output files:
   - Generated text and PDFs are written to `outputs/` via `/download/*` routes.

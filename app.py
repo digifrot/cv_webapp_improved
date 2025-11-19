@@ -84,7 +84,7 @@ def download_pdf():
     path = os.path.join("outputs", f"Liran_Roth_CV_{safe_name}.pdf")
 
     os.makedirs("outputs", exist_ok=True)
-    save_pdf(text, path)
+    save_pdf(text, path, job_title)
     return send_file(path, as_attachment=True)
 
 

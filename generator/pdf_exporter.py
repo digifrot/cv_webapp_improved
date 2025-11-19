@@ -9,13 +9,16 @@ from generator.config import LINKEDIN_PROFILE
 import re
 
 
-def save_pdf(text, filename):
+def save_pdf(text, filename, job_title="CV"):
     """Generate a nicely formatted PDF from a plain-text CV string with working hyperlinks."""
     doc = SimpleDocTemplate(
         filename,
         pagesize=A4,
         leftMargin=40,
-        rightMargin=40
+        rightMargin=40,
+        title=f"Liran Roth - {job_title}",
+        author="Liran Roth",
+        subject="CV"
     )
 
     styles = getSampleStyleSheet()
@@ -35,7 +38,7 @@ def save_pdf(text, filename):
     styles.add(
         ParagraphStyle(
             name="Header",
-            fontSize=14,
+            fontSize=16,
             fontName="Helvetica-Bold",
             allowHTML=True,
             leading=18,
