@@ -31,6 +31,8 @@
                 <option value="gpt-4o" selected>GPT-4o (Recommended)</option>
                 <option value="gpt-5">GPT-5</option>
                 <option value="gpt-5-mini">GPT-5 Mini</option>
+                <option value="gpt-5-nano">GPT-5 Nano</option>
+                <option value="gpt-4.1">GPT-4.1</option>
                 <option value="gpt-4-turbo">GPT-4 Turbo</option>
                 <option value="gpt-4">GPT-4</option>
                 <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
@@ -44,13 +46,17 @@
             <p class="hint">Leave unchanged to use the default system prompt.</p>
 
             <button type="submit" class="btn-primary">Generate Tailored CV</button>
-
-            <div id="loader" class="loader" style="display:none;"></div>
         </form>
 
     </div>
 
 </div>
 
+<!-- Loader overlay - centered and above all content -->
+<div id="loader" class="loader-overlay" style="display:none;">
+    <img src="/static/img/loader.gif" alt="Loading..." class="loader-gif" />
+</div>
+
 </body>
 </html>
+

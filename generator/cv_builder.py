@@ -90,7 +90,7 @@ def generate_cv(job_desc, custom_prompt=None, model="gpt-4o"):
     prompt = build_prompt(job_desc)
 
     # Models that only support default temperature (1)
-    models_with_fixed_temp = ["gpt-5", "gpt-5-mini"]
+    models_with_fixed_temp = ["gpt-5", "gpt-5-mini", "gpt-5-nano"]
     
     # Build API call parameters
     api_params = {
