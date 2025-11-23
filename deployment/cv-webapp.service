@@ -3,12 +3,12 @@ Description=CV Webapp - AI Tailored CV Generator
 After=network.target
 
 [Service]
-Type=notify
+Type=simple
 User=www-data
 Group=www-data
 WorkingDirectory=/var/www/cv_webapp
 Environment="PATH=/var/www/cv_webapp/venv/bin"
-EnvironmentFile=/var/www/cv_webapp/.env
+EnvironmentFile=-/var/www/cv_webapp/.env
 ExecStart=/var/www/cv_webapp/venv/bin/gunicorn --bind 127.0.0.1:5000 --workers 3 --timeout 120 app:app
 ExecReload=/bin/kill -s HUP $MAINPID
 KillMode=mixed
