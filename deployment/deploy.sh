@@ -11,7 +11,7 @@ echo "=========================================="
 
 # Configuration
 APP_DIR="/var/www/cv_webapp"
-REPO_URL="https://github.com/yourusername/cv_webapp_improved.git"  # UPDATE THIS
+REPO_URL="https://github.com/digifrot/cv_webapp_improved.git"  # UPDATE THIS
 BRANCH="master"
 
 # Colors for output
