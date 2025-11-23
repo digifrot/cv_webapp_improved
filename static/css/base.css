@@ -52,14 +52,15 @@ body {
 .label {
     margin-top: 15px;
     margin-bottom: 6px;
+    margin-right: 5px;
     font-size: 14px;
     font-weight: 600;
-    display: block;
+    display:inline-block;
 }
 
 .input {
-    width: 100%;
-    padding: 14px;
+    width: 25%;
+    padding: 10px;
     border-radius: 8px;
     background: #161616;
     border: 1px solid #2a2a2a;

@@ -1,7 +1,7 @@
 # app.py
 from flask import Flask, render_template, request, send_file
 import os
-from generator.config import SYSTEM_PROMPT, LINKEDIN_PROFILE
+from generator.config import SYSTEM_PROMPT, LINKEDIN_PROFILE, USER_NAME, USER_PHONE, USER_EMAIL
 from generator.linkedin_scraper import scrape_linkedin
 from generator.cv_builder import generate_cv
 from generator.pdf_exporter import save_pdf
@@ -14,7 +14,14 @@ app = Flask(__name__)
 # ================================
 @app.route("/")
 def index():
-    return render_template("index.html", default_prompt=SYSTEM_PROMPT)
+    return render_template(
+        "index.html",
+        default_prompt=SYSTEM_PROMPT,
+        user_name=USER_NAME,
+        user_phone=USER_PHONE,
+        user_email=USER_EMAIL,
+        linkedin_profile=LINKEDIN_PROFILE
+    )
 
 
 # ================================
@@ -25,6 +32,12 @@ def generate():
     input_text = request.form.get("linkedin_url", "").strip()
     custom_prompt = request.form.get("custom_prompt", "").strip()
     gpt_model = request.form.get("gpt_model", "gpt-4o")
+
+    # Get header parameters from form
+    user_name = request.form.get("user_name", "").strip()
+    user_phone = request.form.get("user_phone", "").strip()
+    user_email = request.form.get("user_email", "").strip()
+    linkedin_profile = request.form.get("linkedin_profile", "").strip()
 
     # Check if input is a URL (starts with http:// or https://)
     if input_text.startswith(("http://", "https://")):
@@ -39,8 +52,16 @@ def generate():
             return "Please provide either a LinkedIn URL or paste a job description.", 400
         job_title = "Job Position"
 
-    # Generate CV (HTML/TXT + PDF-safe)
-    cv_text, cv_pdf, job_fit_percent = generate_cv(job_desc, custom_prompt, gpt_model)
+    # Generate CV (HTML/TXT + PDF-safe) with custom header
+    cv_text, cv_pdf, job_fit_percent = generate_cv(
+        job_desc,
+        custom_prompt,
+        gpt_model,
+        user_name=user_name,
+        user_phone=user_phone,
+        user_email=user_email,
+        linkedin_profile=linkedin_profile
+    )
 
     return render_template(
         "result.html",
@@ -48,7 +69,7 @@ def generate():
         job_desc=job_desc,
         cv=cv_text,
         cv_pdf=cv_pdf,
-        linkedin_profile=LINKEDIN_PROFILE,
+        linkedin_profile=linkedin_profile or LINKEDIN_PROFILE,
         custom_prompt=custom_prompt,
         job_fit_percent=job_fit_percent,
     )

@@ -7,8 +7,11 @@ load_dotenv()
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 
-# LinkedIn link used inside PDF header
-LINKEDIN_PROFILE = "https://www.linkedin.com/in/liran-roth-6a92051b1/"
+# User header information (editable via environment variables or defaults)
+USER_NAME = os.getenv("USER_NAME", "")
+USER_PHONE = os.getenv("USER_PHONE", "")
+USER_EMAIL = os.getenv("USER_EMAIL", "")
+LINKEDIN_PROFILE = os.getenv("LINKEDIN_PROFILE", "")
 
 SYSTEM_PROMPT = (
     "You are a professional CV editor.\n\n"

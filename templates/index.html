@@ -19,6 +19,20 @@
 
         <form id="cvForm" action="/generate" method="POST">
 
+            <label class="label">Your Name</label>
+            <input type="text" name="user_name" value="{{ user_name }}" placeholder="e.g., JOHN BRADLY" class="input" required>
+
+            <label class="label">Your Phone</label>
+            <input type="text" name="user_phone" value="{{ user_phone }}" placeholder="e.g., +1234567890" class="input" required>
+
+            <br> 
+
+            <label class="label">Your Email</label>
+            <input type="email" name="user_email" value="{{ user_email }}" placeholder="e.g., johnbradly@example.com" class="input" required>
+
+            <label class="label">Your LinkedIn Profile URL</label>
+            <input type="url" name="linkedin_profile" value="{{ linkedin_profile }}" placeholder="e.g., https://www.linkedin.com/in/your-profile/" class="input" required>
+
             <label class="label">LinkedIn Job URL or Paste Job Description</label>
             <textarea name="linkedin_url"
                       required
@@ -29,7 +43,7 @@
             <label class="label">AI Model</label>
             <select name="gpt_model" class="input" style="margin-bottom: 20px;">
                 <optgroup label="OpenAI Models">
-                    <option value="gpt-4o" selected>GPT-4o (Recommended)</option>
+                    <option value="gpt-4o" selected>GPT-4o</option>
                     <option value="gpt-5">GPT-5.1</option>
                     <option value="gpt-5">GPT-5</option>
                     <option value="gpt-5-mini">GPT-5 Mini</option>

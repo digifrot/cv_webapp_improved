@@ -4,7 +4,7 @@ import json
 import re
 from openai import OpenAI
 from anthropic import Anthropic
-from generator.config import OPENAI_API_KEY, ANTHROPIC_API_KEY, SYSTEM_PROMPT, LINKEDIN_PROFILE
+from generator.config import OPENAI_API_KEY, ANTHROPIC_API_KEY, SYSTEM_PROMPT, LINKEDIN_PROFILE, USER_NAME, USER_PHONE, USER_EMAIL
 
 # Initialize API clients
 openai_client = OpenAI(api_key=OPENAI_API_KEY)
@@ -76,7 +76,7 @@ def build_prompt(job_desc):
 FIT_REGEX = re.compile(r"JOB_FIT_PERCENT:\s*(\d{1,3})")
 
 
-def generate_cv(job_desc, custom_prompt=None, model="gpt-4o"):
+def generate_cv(job_desc, custom_prompt=None, model="gpt-4o", user_name=None, user_phone=None, user_email=None, linkedin_profile=None):
     """
     Produce two versions:
     - HTML/TXT version (header with plain text)
@@ -86,6 +86,10 @@ def generate_cv(job_desc, custom_prompt=None, model="gpt-4o"):
         job_desc: Job description text
         custom_prompt: Optional custom system prompt
         model: Model to use (OpenAI or Anthropic, default: "gpt-4o")
+        user_name: User's name (defaults to config)
+        user_phone: User's phone (defaults to config)
+        user_email: User's email (defaults to config)
+        linkedin_profile: LinkedIn URL (defaults to config)
     """
 
     system_prompt = custom_prompt if custom_prompt else SYSTEM_PROMPT
@@ -134,19 +138,23 @@ def generate_cv(job_desc, custom_prompt=None, model="gpt-4o"):
         content = "SUMMARY\n" + content
 
     # =============================
-    # Headers
+    # Headers (use parameters or fallback to config)
     # =============================
+    final_name = user_name if user_name else USER_NAME
+    final_phone = user_phone if user_phone else USER_PHONE
+    final_email = user_email if user_email else USER_EMAIL
+    final_linkedin = linkedin_profile if linkedin_profile else LINKEDIN_PROFILE
 
     # Header for TXT/HTML (plain)
     header_html = (
-        "LIRAN ROTH\n"
-        "LinkedIn | 0542223310 | liranrothwork@gmail.com\n\n"
+        f"{final_name}\n"
+        f"LinkedIn | {final_phone} | {final_email}\n\n"
     )
 
     # Header for PDF — MUST be one continuous line (ReportLab hyperlink uses <link>)
     header_pdf = (
-        f"<link href='{LINKEDIN_PROFILE}'>LinkedIn</link> | "
-        "0542223310 | liranrothwork@gmail.com"
+        f"<link href='{final_linkedin}'>LinkedIn</link> | "
+        f"{final_phone} | {final_email}"
     )
 
     # Return both versions
