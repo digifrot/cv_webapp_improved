@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: cv-webapp
+    env: docker
+    dockerfilePath: Dockerfile
+    branch: master
+    plan: free
+    # Persistent disk for data files and outputs
+    disk:
+      name: cvapp-data
+      sizeGB: 1
+      mountPath: /app/data
+    # Environment variables (set these in Render Dashboard)
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: USER_NAME
+        sync: false
+      - key: USER_PHONE
+        sync: false
+      - key: USER_EMAIL
+        sync: false
+      - key: LINKEDIN_PROFILE
+        sync: false
